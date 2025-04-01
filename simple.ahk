@@ -136,3 +136,7 @@ freq(Hotstring) {
     Send "freqs.set(freqs[i], (freq || 0) {+} 1);{Enter}"
     Send "{}}"
 }
+
+~^s::{
+    MsgBox "easier to change or harder to change?"
+}
