@@ -140,3 +140,9 @@ freq(Hotstring) {
 ~^s::{
     MsgBox "easier to change or harder to change?"
 }
+
+; opens programing folder
+; Hotkey: Alt+p
+!p:: {
+    Run("C:\Users\Андрей\OneDrive\Рабочий стол\Программирование")
+}
