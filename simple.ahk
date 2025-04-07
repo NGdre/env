@@ -150,3 +150,11 @@ freq(Hotstring) {
 ; opens google keep
 ; Hotkey: Alt+p
 !k:: Run("https://keep.google.com/u/0/#home")
+
+; runs work context
+; Hotkey: Alt+w
+!w:: {
+    Run("C:\Users\Андрей\AppData\Local\Programs\Microsoft VS Code\Code.exe")
+    Run("https://chat.deepseek.com/")
+    Run("https://keep.google.com/u/0/#label/%D0%9F%D1%80%D0%BE%D0%B5%D0%BA%D1%82%D1%8B")
+}
