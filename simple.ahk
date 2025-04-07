@@ -137,7 +137,7 @@ freq(Hotstring) {
     Send "{}}"
 }
 
-~^s::{
+~^s:: {
     MsgBox "easier to change or harder to change?"
 }
 
@@ -146,3 +146,7 @@ freq(Hotstring) {
 !p:: {
     Run("C:\Users\Андрей\OneDrive\Рабочий стол\Программирование")
 }
+
+; opens google keep
+; Hotkey: Alt+p
+!k:: Run("https://keep.google.com/u/0/#home")
