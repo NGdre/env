@@ -158,3 +158,49 @@ freq(Hotstring) {
     Run("https://chat.deepseek.com/")
     Run("https://keep.google.com/u/0/#label/%D0%9F%D1%80%D0%BE%D0%B5%D0%BA%D1%82%D1%8B")
 }
+
+; pastes the next date above some date (changes now only days)
+; Hotkey: Ctrl+Alt+N
+^!n::
+{
+    A_Clipboard := "" ; Start with empty clipboard
+
+    ; Select and copy the current line
+    Send "{Home}+{End}^c"
+    if !ClipWait(0.5) { ; Wait for clipboard to contain text
+        return
+    }
+
+    ; Get input date (from clipboard or input box)
+    clipboardContent := Trim(A_Clipboard)
+    if (RegExMatch(clipboardContent, "^\d{2}.\d{2}.\d{4}$")) {
+        inputDate := clipboardContent
+    } else {
+        return
+    }
+
+    ; Validate format and split into parts
+    if (!RegExMatch(inputDate, "^(?<day>\d{2}).(?<month>\d{2}).(?<year>\d{4})$", &match)) {
+        return
+    }
+
+    year := match.year, month := match.month, day := match.day
+
+    ahkDate := year . month . day
+    if (StrLen(ahkDate) != 8 || !IsInteger(ahkDate)) {
+        MsgBox "Invalid date components."
+        return
+    }
+
+    ahkDate += 1, "Days"
+
+    formattedNextDate := FormatTime(ahkDate, "dd.MM.yyyy")
+
+    ; Paste above the original line
+    A_Clipboard := formattedNextDate
+    Send "{Home}{Enter}{Up}^v"
+}
+
+IsInteger(str) {
+    return RegExMatch(str, "^\d+$") ? true : false
+}
