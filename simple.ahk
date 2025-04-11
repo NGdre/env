@@ -1,46 +1,5 @@
 ﻿^+d:: Run "C:\Users\Андрей\Downloads" ; ctrl+shift+d
 
-LoopRunning := false  ; Control flag for the loop
-
-Hotkey("^+t", StartLoop)  ; Start key (change F1 to your preferred key)
-Hotkey("^+b", StopLoop)   ; Stop key (change F2 to your preferred key)
-
-StartLoop(*) {
-    global LoopRunning
-    if LoopRunning  ; Prevent multiple starts
-        return
-
-    sleepDuration := 250
-
-    LoopRunning := true
-    while LoopRunning {
-        Send "{g down}"
-        Sleep sleepDuration
-        Send "{g up}"
-
-        Send "{h down}"
-        Sleep sleepDuration
-        Send "{h up}"
-
-    }
-}
-
-StopLoop(*) {
-    global LoopRunning := false
-}
-
-; gets mouse position by given command
-Hotkey("+^1", getMousePos)
-
-getMousePos(*) {
-    xpos := 0
-    ypos := 0
-    MouseGetPos(&xpos, &ypos)
-    xy := "x" xpos " y" ypos
-
-    Send(xy)
-}
-
 Hotkey("^d", clearText)
 
 clearText(*) {
@@ -65,7 +24,7 @@ clearText(*) {
         ; Convert to uppercase
         A_Clipboard := StrUpper(A_Clipboard)
 
-        ; Paste the modified text
+        ; Paste the modified textпрпрпр
         Send "^v"
 
         ; Short delay to ensure paste completes before restoring clipboard

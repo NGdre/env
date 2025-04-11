@@ -8,5 +8,16 @@
   "extensions.ignoreRecommendations": true,
   "editor.minimap.enabled": false,
   "chat.commandCenter.enabled": false,
-  "terminal.integrated.defaultProfile.windows": "Git Bash"
+  "terminal.integrated.defaultProfile.windows": "Git Bash",
+  "workbench.activityBar.location": "hidden",
+  "editor.stickyScroll.enabled": false,
+  "window.menuBarVisibility": "compact",
+  "window.commandCenter": false,
+  "workbench.layoutControl.enabled": false,
+  "vim.insertModeKeyBindings": [
+    {
+      "before": ["j", "j"],
+      "after": ["<esc>"]
+    }
+  ]
 }
