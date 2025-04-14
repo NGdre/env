@@ -171,3 +171,10 @@ Hotstring(":T:c", pasteConst)
 pasteConst(Hotstring) {
     Send "const "
 }
+
+; Hotkey: i + Tab
+Hotstring(":T:i", pasteItd)
+
+pasteItd(Hotstring) {
+    Send "и т.д."
+}
