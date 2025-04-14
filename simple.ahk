@@ -163,3 +163,11 @@ freq(Hotstring) {
 IsInteger(str) {
     return RegExMatch(str, "^\d+$") ? true : false
 }
+
+; pastes const key word with space after
+; Hotkey: c + Tab
+Hotstring(":T:c", pasteConst)
+
+pasteConst(Hotstring) {
+    Send "const "
+}
