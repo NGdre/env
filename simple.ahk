@@ -107,7 +107,7 @@ freq(Hotstring) {
 }
 
 ; opens google keep
-; Hotkey: Alt+p
+; Hotkey: Alt+k
 !k:: Run("https://keep.google.com/u/0/#home")
 
 ; runs work context
@@ -172,9 +172,63 @@ pasteConst(Hotstring) {
     Send "const "
 }
 
-; Hotkey: i + Tab
-Hotstring(":T:i", pasteItd)
-
-pasteItd(Hotstring) {
+!i:: {
     Send "и т.д."
+}
+
+; opens selected english text in google translate
+; Hotkey: Ctrl + Shift + T
+^+t::
+{
+    ; Save original clipboard contents
+    savedClip := ClipboardAll()
+
+    ; Clear clipboard and copy selected text
+    A_Clipboard := ""
+    Send "^c"
+
+    ; Wait for clipboard to contain text (max 1 second)
+    if !ClipWait(1) {
+        MsgBox "No text selected or couldn't copy text."
+        A_Clipboard := savedClip
+        return
+    }
+
+    ; URL-encode the selected text
+    encodedText := UriEncode(A_Clipboard)
+
+    ; Construct Google Translate URL
+    translateURL := "https://translate.google.com/?hl=ru&sl=en&tl=ru&text="
+        . encodedText
+        . "&op=translate"
+
+    ; Restore original clipboard
+    A_Clipboard := savedClip
+
+    ; Open URL in default browser
+    Run translateURL
+}
+
+; Custom URL-encoding function
+UriEncode(str) {
+    buf := Buffer(StrPut(str, "UTF-8"))
+    StrPut(str, buf, "UTF-8")
+    encoded := ""
+
+    loop buf.Size - 1 {  ; Exclude null terminator
+        byte := NumGet(buf, A_Index - 1, "UChar")
+        if (byte >= 0x41 && byte <= 0x5A) ; A-Z
+        || (byte >= 0x61 && byte <= 0x7A) ; a-z
+        || (byte >= 0x30 && byte <= 0x39) ; 0-9
+        || byte == 0x2D ; -
+        || byte == 0x5F ; _
+        || byte == 0x2E ; .
+        || byte == 0x7E ; ~
+        {
+            encoded .= Chr(byte)
+        } else {
+            encoded .= "%" Format("{:02X}", byte)
+        }
+    }
+    return encoded
 }
