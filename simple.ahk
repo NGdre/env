@@ -232,3 +232,45 @@ UriEncode(str) {
     }
     return encoded
 }
+
+; converts selected text into kebab case for english characters
+; Press Ctrl+Shift+K
+^+k:: {
+    ; Store original clipboard contents
+    originalClipboard := ClipboardAll()
+
+    ; Clear clipboard and copy selected text
+    A_Clipboard := ""
+    Send('^c')
+    if !ClipWait(1) {
+        ; Restore clipboard if no text was selected
+        A_Clipboard := originalClipboard
+        return
+    }
+
+    ; Process the text - convert to kebab-case
+    text := A_Clipboard
+    if text != "" {
+        ; Convert to kebab-case
+        ; 1. Convert to lowercase
+        kebabText := StrLower(text)
+        ; 2. Replace spaces and underscores with hyphens
+        kebabText := StrReplace(kebabText, " ", "-")
+        kebabText := StrReplace(kebabText, "_", "-")
+        ; 3. Remove special characters (keep only alphanumeric and hyphens)
+        kebabText := RegExReplace(kebabText, "[^a-z0-9-]", "")
+        ; 4. Replace multiple consecutive hyphens with single hyphen
+        kebabText := RegExReplace(kebabText, "-+", "-")
+        ; 5. Remove leading/trailing hyphens
+        kebabText := RegExReplace(kebabText, "^-|-$", "")
+
+        A_Clipboard := kebabText
+
+        ; Paste the converted text
+        Send('^v')
+    }
+
+    ; Brief pause then restore original clipboard
+    Sleep(100)
+    A_Clipboard := originalClipboard
+}
