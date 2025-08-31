@@ -37,6 +37,46 @@ clearText(*) {
     }
 }
 
+; Usage:
+; Select text in any application
+; Press Ctrl+Shift+U
+; The first character will be capitalized while preserving the rest
+^+u:: {
+    ; Store original clipboard contents
+    originalClipboard := ClipboardAll()
+
+    ; Clear clipboard and copy selected text
+    A_Clipboard := ""
+    Send('^c')
+    if !ClipWait(1) {
+        ; Restore clipboard if no text was selected
+        A_Clipboard := originalClipboard
+        return
+    }
+
+    ; Process the text - capitalize first letter
+    text := A_Clipboard
+    if text != "" {
+        ; Find the position of the first letter
+        foundPos := RegExMatch(text, "\p{L}", &match)
+        if foundPos > 0 {
+            ; Capitalize the first letter and reconstruct the string
+            part1 := SubStr(text, 1, foundPos - 1)
+            part2 := StrUpper(SubStr(text, foundPos, 1))
+            part3 := SubStr(text, foundPos + 1)
+            processed := part1 . part2 . part3
+            A_Clipboard := processed
+
+            ; Paste the converted text
+            Send('^v')
+        }
+    }
+
+    ; Brief pause then restore original clipboard
+    Sleep(100)
+    A_Clipboard := originalClipboard
+}
+
 ; Activate only in code editors (customize as needed)
 GroupAdd "CodeEditors", "ahk_exe Code.exe"      ; VS Code
 GroupAdd "CodeEditors", "ahk_exe WebStorm.exe"  ; WebStorm
