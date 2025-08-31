@@ -176,6 +176,14 @@ pasteConst(Hotstring) {
     Send "и т.д."
 }
 
+; pastes dash
+; Hotkey: -- + Tab
+Hotstring(":T:--", pasteDash)
+
+pasteDash(Hotstring) {
+    Send "—"
+}
+
 ; opens selected english text in google translate
 ; Hotkey: Ctrl + Shift + T
 ^+t::
