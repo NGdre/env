@@ -1,4 +1,6 @@
-﻿^+d:: Run "C:\Users\Андрей\Downloads" ; ctrl+shift+d
+﻿#Include AutoHotKey\ListOrder.ahk
+
+^+d:: Run "C:\Users\Андрей\Downloads" ; ctrl+shift+d
 
 Hotkey("^d", clearText)
 
