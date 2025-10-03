@@ -1,4 +1,5 @@
 ﻿#Include AutoHotKey\ListOrder.ahk
+#Include AutoHotKey\Quotes.ahk
 
 ^+d:: Run "C:\Users\Андрей\Downloads" ; ctrl+shift+d
 
