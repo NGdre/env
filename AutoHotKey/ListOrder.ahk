@@ -85,48 +85,43 @@
 ; Чтобы использовать, выделите нужный текст и нажмите Ctrl+Win+L
 ^#l::
 {
-    ; Сохраняем текущий буфер обмена
     savedClipboard := ClipboardAll()
-    A_Clipboard := "" ; Очищаем буфер обмена
+    A_Clipboard := ""
 
-    ; Копируем выделенный текст
     Send "^c"
     if !ClipWait(0.5) {
-        ; Восстанавливаем буфер обмена и выходим, если не удалось скопировать
         A_Clipboard := savedClipboard
         return
     }
 
-    ; Получаем текст из буфера обмена
     text := A_Clipboard
-
-    ; Нормализуем список
     normalizedText := NormalizeList(text)
 
-    ; Вставляем обработанный текст
     A_Clipboard := normalizedText
     Send "^v"
 
-    ; Восстанавливаем оригинальный буфер обмена через 500 мс
     Sleep 500
     A_Clipboard := savedClipboard
 }
 
 NormalizeList(text) {
-    ; Разбиваем текст на строки
     lines := StrSplit(text, "`n", "`r")
     elements := []
+    currentElement := { content: "", additional: [] }
     delimiter := ""
 
-    ; Обрабатываем каждую строку
+    ; Собираем элементы с их дополнительным текстом
     for line in lines {
-        line := Trim(line)
+        line := Trim(line, " `t`r`n") ; Убираем пробелы и табы только с краев
 
-        ; Пропускаем пустые строки
-        if line = ""
+        ; Если строка пустая, добавляем ее к текущему элементу как дополнительную
+        if line = "" {
+            if currentElement.content != ""
+                currentElement.additional.Push("")
             continue
+        }
 
-        ; Ищем элементы с номером в начале (поддерживает форматы "1.", "1)", "1) ")
+        ; Проверяем, является ли строка элементом списка
         if RegExMatch(line, "^\s*(\d+)([.)])\s*(.*)", &match) {
             ; Сохраняем разделитель из первого найденного элемента
             if delimiter = ""
@@ -134,58 +129,86 @@ NormalizeList(text) {
 
             content := Trim(match[3])
 
-            ; Пропускаем элементы с пустым содержимым
+            ; Если у нас уже есть элемент, сохраняем его
+            if currentElement.content != "" {
+                elements.Push(currentElement.Clone())
+                currentElement := { content: "", additional: [] }
+            }
+
+            ; Устанавливаем содержание нового элемента
             if content != "" {
                 ; Приводим первую букву к верхнему регистру
-                if content != "" {
-                    firstChar := SubStr(content, 1, 1)
-                    restOfString := SubStr(content, 2)
-                    content := Format("{:U}", firstChar) . restOfString
-                }
-
-                elements.Push(content)
+                content := RegExReplace(content, "^(.)", UCase("$1"))
+                currentElement.content := content
             }
+        }
+        else {
+            ; Если это не элемент списка, добавляем как дополнительный текст
+            if currentElement.content != ""
+                currentElement.additional.Push(line)
         }
     }
 
-    ; Сортируем элементы в лексикографическом порядке
-    ; В AHK v2 используем обычную сортировку массива строк
-    sortedElements := SortArray(elements)
+    ; Добавляем последний элемент
+    if currentElement.content != ""
+        elements.Push(currentElement)
 
-    ; Формируем новый список с правильной нумерацией
+    ; Удаляем элементы с пустым содержанием (замена Filter)
+    filteredElements := []
+    for element in elements {
+        if element.content != ""
+            filteredElements.Push(element)
+    }
+    elements := filteredElements
+
+    ; Сортируем элементы по содержанию (пузырьковая сортировка)
+    sortedElements := BubbleSortElements(elements)
+
+    ; Формируем результат
     result := ""
-    loop sortedElements.Length {
+    for i, element in sortedElements {
+        ; Добавляем основной элемент
         if delimiter = ")"
-            result .= A_Index . ") " . sortedElements[A_Index]
+            result .= i . ") " . element.content
         else
-            result .= A_Index . ". " . sortedElements[A_Index]
+            result .= i . ". " . element.content
 
-        if A_Index < sortedElements.Length
+        ; Добавляем дополнительный текст
+        for j, additionalLine in element.additional {
+            result .= "`r`n" . additionalLine
+        }
+
+        if i < sortedElements.Length
             result .= "`r`n"
     }
 
     return result
 }
 
-; Функция для сортировки массива в AHK v2
-SortArray(arr) {
-    ; Создаем копию массива для сортировки
+; Функция пузырьковой сортировки для элементов
+BubbleSortElements(arr) {
     sorted := []
     for item in arr
         sorted.Push(item)
 
-    ; Простая пузырьковая сортировка
+    n := sorted.Length
     loop {
         swapped := false
-        loop sorted.Length - 1 {
-            if StrCompare(sorted[A_Index], sorted[A_Index + 1]) > 0 {
+        loop n - 1 {
+            if StrCompare(sorted[A_Index].content, sorted[A_Index + 1].content) > 0 {
                 temp := sorted[A_Index]
                 sorted[A_Index] := sorted[A_Index + 1]
                 sorted[A_Index + 1] := temp
                 swapped := true
             }
         }
-    } until !swapped
+        n := n - 1
+    } until !swapped || n <= 1
 
     return sorted
+}
+
+; Функция для преобразования первого символа в верхний регистр
+UCase(str) {
+    return Format("{:U}", str)
 }
