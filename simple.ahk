@@ -317,3 +317,7 @@ UriEncode(str) {
     Sleep(100)
     A_Clipboard := originalClipboard
 }
+
+; Press ?q and space
+#Hotstring EndChars -()[]{}:;'",.?!`n `t
+::?q::Вопросы для самопроверки:`n1.
