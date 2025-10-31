@@ -1,7 +1,9 @@
 ﻿#Include AutoHotKey\ListOrder.ahk
 #Include AutoHotKey\Quotes.ahk
 
-^+d:: Run "C:\Users\Андрей\Downloads" ; ctrl+shift+d
+; Open downloads folder
+; Hotkey: Ctrl+Shift+D
+^+d:: Run "C:\Users\Андрей\Downloads"
 
 Hotkey("^d", clearText)
 
@@ -27,7 +29,7 @@ clearText(*) {
         ; Convert to uppercase
         A_Clipboard := StrUpper(A_Clipboard)
 
-        ; Paste the modified textпрпрпр
+        ; Paste the modified text
         Send "^v"
 
         ; Short delay to ensure paste completes before restoring clipboard
@@ -140,7 +142,7 @@ freq(Hotstring) {
 }
 
 ~^s:: {
-    MsgBox "easier to change or harder to change?"
+    MsgBox "Is easier to change or harder to change?"
 }
 
 ; opens programing folder
