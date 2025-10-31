@@ -216,7 +216,12 @@ IsInteger(str) {
 Hotstring(":T:--", pasteDash)
 
 pasteDash(Hotstring) {
-    Send "—"
+    if WinActive("ahk_exe Code.exe") || WinActive("ahk_exe VSCodium.exe") {
+
+        Send "-- "
+        return
+    }
+    Send "— "
 }
 
 ; opens selected english text in google translate
