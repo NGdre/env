@@ -1,5 +1,6 @@
 ﻿#Include AutoHotKey\ListOrder.ahk
 #Include AutoHotKey\Quotes.ahk
+#Include AutoHotKey\CommitTypes.ahk
 
 ; Open downloads folder
 ; Hotkey: Ctrl+Shift+D
