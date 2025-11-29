@@ -45,6 +45,14 @@ defaultPort := 3000
 ; Hotkey: Alt+K
 !k:: Run("https://keep.google.com/u/0/#home")
 
+; opens deepseek
+; Hotkey: Alt+D
+!d:: Run("https://chat.deepseek.com/")
+
+; opens google
+; Hotkey: Alt+G
+!g:: Run("https://www.google.com/?hl=ru")
+
 ; runs work context
 ; Hotkey: Alt+W
 !w:: {
